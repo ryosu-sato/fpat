@@ -15,6 +15,7 @@ install: [
   [make "install"]
 ]
 depends: [
+  "ocamlfind"
   "num"
   "batteries"
   "zarith"
@@ -22,5 +23,6 @@ depends: [
   "csisat"
   "z3"
   "apron"
+  "conf-autoconf"
 ]
 synopsis: "A framework for program analysis and transformation"
