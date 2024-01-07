@@ -62,7 +62,7 @@ let string_of_var = Idnt.serialize >> String.escape
 
 let string_of_type ty =
   if Type.is_ext ty then
-    Type.let_ext ty String.uppercase
+    Type.let_ext ty String.uppercase_ascii
   else if Type.is_unit ty then "INT"
   else if Type.is_bool ty then "BOOLEAN"
   else if Type.is_int ty then "INT"
