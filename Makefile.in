@@ -153,7 +153,7 @@ SRC := $(SRC) \
 C_SRC = dummy
 C_INCLUDES =
 C_OPT = -fPIC
-REQUIRES = str unix bigarray num batteries zarith
+REQUIRES = str unix num batteries zarith
 
 SRC := $(SRC) atpInterface
 REQUIRES := $(REQUIRES) atp
