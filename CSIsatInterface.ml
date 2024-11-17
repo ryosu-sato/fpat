@@ -8,12 +8,12 @@ open Term
 (** {6 Functions for CSIsat formulas} *)
 
 let csisat_unit = CsisatAst.Application("unit", [])
-let csisat_true = CsisatAst.Application("true", [])
-let csisat_false = CsisatAst.Application("false", [])
+let csisat_true = CsisatAst.Application("true_", [])
+let csisat_false = CsisatAst.Application("false_", [])
 let csisat_tuple ts = CsisatAst.Application("tuple", ts)
 (* this encoding is not OK
-   input1: x = tuple(true(), true(), true())
-   input2: x = tuple(y, z, false())
+   input1: x = tuple(true_(), true_(), true_())
+   input2: x = tuple(y, z, false_())
    has an interpolant but cannot be found
 *)
 
@@ -38,8 +38,8 @@ let integer_heuristic p =
   else p
 
 (** Use this instead of CsisatLIUtils.round_coeff, which
-    translates "x = true () && ... 0.5 ..." to
-    a formula like "2 * x = true () && ...1..."
+    translates "x = true_ () && ... 0.5 ..." to
+    a formula like "2 * x = true_ () && ...1..."
     because CSIsat considers "x" an integer variable? *)
 let rec round_coeff p =
   match p with
@@ -88,14 +88,32 @@ let interpolate_check ip p1 p2 =
   interp
 
 let theory =
-  [CsisatAst.Not(CsisatAst.Eq(CsisatAst.Application("true", []),
-                              CsisatAst.Application("false", [])))]
+  [CsisatAst.Not(CsisatAst.Eq(csisat_true, csisat_false))]
 (*
   forall x, y.
   CsisatAst.Not(CsisatAst.Eq(CsisatAst.Application("nil", []),
                              CsisatAst.Application("cons", [x; y])));
   forall x. len x >= 0
 *)
+
+let interpolate_csisat_bin bin p1 p2 =
+  let cin,cout = Unix.open_process bin in
+  Printf.fprintf cout "%s;%s" (CsisatAstUtil.print p1) (CsisatAstUtil.print p2);
+  close_out cout;
+  let r =
+    input_line cin
+    |> Lexing.from_string
+    |> CsisatInfixParse.main CsisatInfixLex.token
+    |> List.hd
+  in
+  match Unix.close_process (cin, cout) with
+  | WEXITED _ -> r
+  | WSIGNALED _ | WSTOPPED _ ->
+    Format.printf
+      "@[<v>a CSIsat exited with an error when interpolating %a and %a@]"
+      String.pr (CsisatAstUtil.print p1)
+      String.pr (CsisatAstUtil.print p2);
+    assert false
 
 let interpolate_csisat p1 p2 =
   try
@@ -104,7 +122,9 @@ let interpolate_csisat p1 p2 =
       then CsisatAst.And(p1 :: theory)
       else p1
     in
-    CsisatInterpolate.interpolate_with_proof p1 p2
+    (match !InterpProver.csisat_binary with
+     | None -> CsisatInterpolate.interpolate_with_proof p1 p2
+     | Some bin -> interpolate_csisat_bin bin p1 p2)
   with
   | CsisatAst.SAT | CsisatAst.SAT_FORMULA(_) -> raise InterpProver.Unknown
   | Failure(msg) ->

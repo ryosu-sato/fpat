@@ -20,6 +20,7 @@ let csisat_use_integer_heuristic = ref true
 let csisat_use_theory = ref true
 let csisat_int_mode = ref true
 let degree = ref 1
+let csisat_binary : string option ref = ref None
 
 (** {6 Interpolating prover combinators} *)
 

@@ -18,6 +18,7 @@ val csisat_use_integer_heuristic : bool ref
 val csisat_use_theory : bool ref
 val csisat_int_mode : bool ref
 val degree : int ref
+val csisat_binary : string option ref
 
 (** {6 Interpolating prover combinators} *)
 

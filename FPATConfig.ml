@@ -116,6 +116,8 @@ let arg_spec =
    (* options for interpolating provers *)
    "-degree", Arg.Int (fun d -> InterpProver.degree := d; Template.degree := d),
      " Set the degree of interpolants";
+   "-csisat-bin", Arg.String (fun s -> InterpProver.csisat_binary := Some s),
+     " Use CSIsat binary";
    (* SMT solvers *)
    "-set-theory", Arg.Unit (SMTProver.use_set_theory >> InterpProver.use_set_theory), "Use after -smt";
    "-smt", Arg.String (function
