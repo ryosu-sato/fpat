@@ -20,7 +20,7 @@ let params =
     (*("SOFT_TIMEOUT", string_of_int !Global.timeout_z3);*)
     (*("MBQI", "false")*)
     (*("smtlib2_compliant", "true");*)(*@todo uncommenting this causes a coercion error for mixed integer problems!*)
-    ("well_sorted_check", "true")]
+    (*"well_sorted_check", "true"*)]
 let ctx = mk_context params
 
 let push_pop solver f tenv phi =

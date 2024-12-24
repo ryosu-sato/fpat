@@ -1,5 +1,7 @@
 opam-version: "2.0"
-maintainer: "Ryosuke SATO <rsato@is.s.u-tokyo.ac.jp>"
+name: "fpat"
+version: "v20241224"
+maintainer: "Ryosuke SATO <rsato@acm.org>"
 authors: [
   "Hiroshi Unno <uhiro@cs.tsukuba.ac.jp>"
 ]
