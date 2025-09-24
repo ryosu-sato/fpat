@@ -1,6 +1,6 @@
 opam-version: "2.0"
 name: "fpat"
-version: "v20241224"
+version: "v20250924"
 maintainer: "Ryosuke SATO <rsato@acm.org>"
 authors: [
   "Hiroshi Unno <uhiro@cs.tsukuba.ac.jp>"
