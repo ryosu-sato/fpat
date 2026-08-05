@@ -931,20 +931,18 @@ let save_smtlib2 filename hcs =
            (Pair.fold
               (fun x t -> "(" ^ Idnt.string_of x ^ string_of_ty t ^ ")"))
        in
+       (* Some solvers (e.g. HoIce) reject quantifier-free clauses,
+          so bind a dummy variable when the clause has no free variables *)
+       let vs = if vs = [] then ["(|mochi!dummy| Int)"] else vs in
        hc
        |> (if_ HornClause.is_goal
              (HornClause.formula_of
               >> Formula.bnot
               >> CunFormula.sexp_of
-              >> (if vs = [] then
-                    Format.fprintf ocf
-                    "(assert (not %a))@,"
-                    String.pr
-                  else
-                    Format.fprintf ocf
-                    "(assert (not (exists (%a) %a)))@,"
-                    (List.pr String.pr "") vs
-                    String.pr))
+              >> Format.fprintf ocf
+                   "(assert (not (exists (%a) %a)))@,"
+                   (List.pr String.pr "") vs
+                   String.pr)
              (HornClause.formula_of
               >> (CunFormula.sexp_of ~smt2:true)
               >> Format.fprintf ocf
